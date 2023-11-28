@@ -1,0 +1,17 @@
+{
+  "name": "reth_miner",
+  "version": "1.0.0",
+  "description": "reth miner",
+  "main": "index.js",
+  "scripts": {
+    "mint": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ethers": "^5.7.2"
+  }
+}
