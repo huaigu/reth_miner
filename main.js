@@ -23,7 +23,7 @@ const computeHash = () => {
       )
     );
     if (hashed_solution.startsWith("0x7777")) {
-      console.log(`solution found: ${hashed_solution}`);
+      logInfo(`solution found: ${hashed_solution}`);
       solution = hashed_solution;
       break;
     }
@@ -53,7 +53,7 @@ async function mine_rETH(idx) {
     to: account, // Self-transfer
     nonce: nonce,
     gasPrice: ga,
-    gasLimit: ethers.utils.hexlify(40000),
+    gasLimit: ethers.utils.hexlify(26000),
     data: dataHex,
     chainId: 1,
   };
@@ -62,10 +62,10 @@ async function mine_rETH(idx) {
   const receipt = await provider.sendTransaction(signedTx);
   //await to confirm
   await provider.waitForTransaction(receipt.hash);
-  console.log(`Successful minted rETH: ${receipt.hash}`)
+  logInfo(`Successful minted rETH: ${receipt.hash}`);
 
   //async show gas consumption and balance
-  if(idx % 4 == 0){
+  if (idx % 4 == 0) {
     showGasConsumptionAndBalance(receipt.hash);
   }
 }
@@ -74,14 +74,14 @@ const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-const showGasConsumptionAndBalance = async (txHash)=>{
-    const receipt = await provider.getTransactionReceipt(txHash);
-    const balance = await provider.getBalance(account);
+const showGasConsumptionAndBalance = async (txHash) => {
+  const receipt = await provider.getTransactionReceipt(txHash);
+  const balance = await provider.getBalance(account);
 
-    // estimate how many reths you can mint base on current tx gas used and current balance
-    const estimateReth = Math.floor(balance/receipt.gasUsed / 1e9);
-    console.log(`You can mint rETH: [${estimateReth}]`)
-}
+  // estimate how many reths you can mint base on current tx gas used and current balance
+  const estimateReth = Math.floor(balance / receipt.gasUsed / 1e9);
+  console.log(`You can mint rETH: [${estimateReth}]`);
+};
 
 const main = async () => {
   let mintedCount = 0;
@@ -93,9 +93,9 @@ const main = async () => {
   }
 };
 
-const logInfo = ()=>{
-    // log with datetime
-    console.log(``)
-}
+const logInfo = (msg) => {
+  // log with datetime
+  console.log(`[${new Date().toLocaleString()}]: ${msg}`);
+};
 
 main();
