@@ -24,13 +24,13 @@ const computeHash = () => {
     );
     if (hashed_solution.startsWith("0x7777")) {
       console.log(`solution found: ${hashed_solution}`);
-      solution = potential_solution;
+      solution = hashed_solution;
       break;
     }
   }
 };
 
-async function mine_rETH() {
+async function mine_rETH(idx) {
   const jsonData = {
     p: "rerc-20",
     op: "mint",
@@ -58,27 +58,46 @@ async function mine_rETH() {
     chainId: 1,
   };
 
-  console.log(`tx: ${JSON.stringify(tx)}`);
-
   const signedTx = await wallet.signTransaction(tx);
   const receipt = await provider.sendTransaction(signedTx);
   //await to confirm
   await provider.waitForTransaction(receipt.hash);
-  console.log(`minted rETH: ${receipt.hash}`);
+  console.log(`Successful minted rETH: ${receipt.hash}`)
+
+  //async show gas consumption and balance
+  if(idx % 4 == 0){
+    showGasConsumptionAndBalance(receipt.hash);
+  }
 }
 
 const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
+const showGasConsumptionAndBalance = async (txHash)=>{
+    const receipt = await provider.getTransactionReceipt(txHash);
+    console.log('Gas consumption:', receipt.gasUsed.toString());
+    const balance = await provider.getBalance(account);
+    console.log(`minted rETH: ${receipt.hash}`);
+
+    // estimate how many reths you can mint base on current tx gas used and current balance
+    const estimateReth = Math.floor(balance/receipt.gasUsed / 1e9);
+    console.log(`You can mint rETH: [${estimateReth}]`)
+}
+
 const main = async () => {
-  let minted = 0;
+  let mintedCount = 0;
   while (true) {
-    console.log(`${minted}: start mining...`);
+    console.log(`[${mintedCount}]: Calculating solution...`);
     computeHash();
-    await mine_rETH();
-    minted++;
+    await mine_rETH(mintedCount);
+    mintedCount++;
   }
 };
+
+const logInfo = ()=>{
+    // log with datetime
+    console.log(``)
+}
 
 main();
