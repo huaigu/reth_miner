@@ -78,9 +78,10 @@ const showGasConsumptionAndBalance = async (txHash) => {
   const receipt = await provider.getTransactionReceipt(txHash);
   const balance = await provider.getBalance(account);
   console.log(`===Your balance: ${balance}===`);
+  
 
   // estimate how many reths you can mint base on current tx gas used and current balance
-  const estimateReth = Math.floor(balance / receipt.gasUsed / 1e9);
+  const estimateReth = Math.floor(balance / receipt.gasUsed /receipt.gasPrice  / 1e9);
   console.log(
     `====You can mint rETH base on current balance: ${estimateReth}====`
   );
@@ -94,7 +95,8 @@ const main = async () => {
     try {
       await mine_rETH(mintedCount);
       mintedCount++;
-    } catch {
+    } catch(ex) {
+      console.error(ex)
       logInfo(`#-${mintedCount}: Failed to mint rETH`);
     }
   }
