@@ -76,9 +76,7 @@ const sleep = (ms) => {
 
 const showGasConsumptionAndBalance = async (txHash)=>{
     const receipt = await provider.getTransactionReceipt(txHash);
-    console.log('Gas consumption:', receipt.gasUsed.toString());
     const balance = await provider.getBalance(account);
-    console.log(`minted rETH: ${receipt.hash}`);
 
     // estimate how many reths you can mint base on current tx gas used and current balance
     const estimateReth = Math.floor(balance/receipt.gasUsed / 1e9);
