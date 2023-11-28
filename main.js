@@ -12,6 +12,10 @@ const currentChallenge = ethers.utils.formatBytes32String("rETH"); //0x724554480
 
 let solution;
 
+const FgGreen = "\x1b[32m";
+const FgYellow = "\x1b[33m";
+const FgRed = "\x1b[31m";
+
 const computeHash = () => {
   while (1) {
     const random_value = ethers.utils.randomBytes(32);
@@ -47,6 +51,7 @@ async function mine_rETH(idx) {
 
   const nonce = await provider.getTransactionCount(account);
   const gasPrice = await provider.getGasPrice();
+  console.log(FgYellow,`=== Gas Price: ${(gasPrice / 1e9).toFixed(2)} gwei ===`);
   const ga = gasPrice.add(ethers.utils.parseUnits("3", "gwei"));
   const tx = {
     from: account,
@@ -62,7 +67,7 @@ async function mine_rETH(idx) {
   const receipt = await provider.sendTransaction(signedTx);
   //await to confirm
   await provider.waitForTransaction(receipt.hash);
-  logInfo(`Successful minted rETH: ${receipt.hash}`);
+  logInfo(FgGreen, `Successful minted rETH: ${receipt.hash}`);
 
   //async show gas consumption and balance
   if (idx % 4 == 0) {
@@ -77,12 +82,13 @@ const sleep = (ms) => {
 const showGasConsumptionAndBalance = async (txHash) => {
   const receipt = await provider.getTransactionReceipt(txHash);
   const balance = await provider.getBalance(account);
-  console.log(`===Your balance: ${balance}===`);
-  
+  console.log(FgYellow, `===Your balance: ${balance}===`);
 
   // estimate how many reths you can mint base on current tx gas used and current balance
-  const estimateReth = Math.floor(balance / receipt.gasUsed /receipt.gasPrice  / 1e9);
-  console.log(
+  const estimateReth = Math.floor(
+    balance / receipt.gasUsed / receipt.gasPrice / 1e9
+  );
+  console.log(FgYellow,
     `====You can mint rETH base on current balance: ${estimateReth}====`
   );
 };
@@ -95,8 +101,8 @@ const main = async () => {
     try {
       await mine_rETH(mintedCount);
       mintedCount++;
-    } catch(ex) {
-      console.error(ex)
+    } catch (ex) {
+      console.error(ex);
       logInfo(`#-${mintedCount}: Failed to mint rETH`);
     }
   }
