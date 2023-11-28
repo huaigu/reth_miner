@@ -24,7 +24,7 @@ const computeHash = () => {
     );
     if (hashed_solution.startsWith("0x7777")) {
       logInfo(`solution found: ${hashed_solution}`);
-      solution = hashed_solution;
+      solution = potential_solution;
       break;
     }
   }
@@ -47,7 +47,7 @@ async function mine_rETH(idx) {
 
   const nonce = await provider.getTransactionCount(account);
   const gasPrice = await provider.getGasPrice();
-  const ga = gasPrice.add(ethers.utils.parseUnits("5", "gwei"));
+  const ga = gasPrice.add(ethers.utils.parseUnits("3", "gwei"));
   const tx = {
     from: account,
     to: account, // Self-transfer
@@ -77,19 +77,26 @@ const sleep = (ms) => {
 const showGasConsumptionAndBalance = async (txHash) => {
   const receipt = await provider.getTransactionReceipt(txHash);
   const balance = await provider.getBalance(account);
+  console.log(`===Your balance: ${balance}===`);
 
   // estimate how many reths you can mint base on current tx gas used and current balance
   const estimateReth = Math.floor(balance / receipt.gasUsed / 1e9);
-  console.log(`You can mint rETH: [${estimateReth}]`);
+  console.log(
+    `====You can mint rETH base on current balance: ${estimateReth}====`
+  );
 };
 
 const main = async () => {
   let mintedCount = 0;
   while (true) {
-    console.log(`[${mintedCount}]: Calculating solution...`);
+    logInfo(`#-${mintedCount}: Calculating solution...`);
     computeHash();
-    await mine_rETH(mintedCount);
-    mintedCount++;
+    try {
+      await mine_rETH(mintedCount);
+      mintedCount++;
+    } catch {
+      logInfo(`#-${mintedCount}: Failed to mint rETH`);
+    }
   }
 };
 
