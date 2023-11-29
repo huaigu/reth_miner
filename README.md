@@ -13,3 +13,8 @@ Fill `RPC_URL` and `PrivateKey`
 
 ### run
 `node main.js`
+
+
+## Update History
+
+2023/11/29: difficult update to 77777
