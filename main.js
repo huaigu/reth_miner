@@ -26,7 +26,7 @@ const computeHash = () => {
         [potential_solution, currentChallenge]
       )
     );
-    if (hashed_solution.startsWith("0x7777")) {
+    if (hashed_solution.startsWith("0x77777")) {
       logInfo(`solution found: ${hashed_solution}`);
       solution = potential_solution;
       break;
