@@ -67,7 +67,7 @@ async function mine_rETH(idx) {
   const receipt = await provider.sendTransaction(signedTx);
   //await to confirm
   await provider.waitForTransaction(receipt.hash);
-  logInfo(FgGreen, `Successful minted rETH: ${receipt.hash}`);
+  console.log(FgGreen, `Successful minted rETH: ${receipt.hash}`);
 
   //async show gas consumption and balance
   if (idx % 4 == 0) {
