@@ -51,7 +51,10 @@ async function mine_rETH(idx) {
 
   const nonce = await provider.getTransactionCount(account);
   const gasPrice = await provider.getGasPrice();
-  console.log(FgYellow,`=== Gas Price: ${(gasPrice / 1e9).toFixed(2)} gwei ===`);
+  console.log(
+    FgYellow,
+    `=== Gas Price: ${(gasPrice / 1e9).toFixed(2)} gwei ===`
+  );
   const ga = gasPrice.add(ethers.utils.parseUnits("3", "gwei"));
   const tx = {
     from: account,
@@ -82,13 +85,14 @@ const sleep = (ms) => {
 const showGasConsumptionAndBalance = async (txHash) => {
   const receipt = await provider.getTransactionReceipt(txHash);
   const balance = await provider.getBalance(account);
-  console.log(FgYellow, `===Your balance: ${balance}===`);
+  console.log(FgYellow, `===Your balance: ${(balance / 1e18).toFixed(2)}===`);
 
   // estimate how many reths you can mint base on current tx gas used and current balance
   const estimateReth = Math.floor(
-    balance / receipt.gasUsed / receipt.gasPrice / 1e9
+    balance / receipt.gasUsed / receipt.effectiveGasPrice
   );
-  console.log(FgYellow,
+  console.log(
+    FgYellow,
     `====You can mint rETH base on current balance: ${estimateReth}====`
   );
 };
